@@ -67,13 +67,12 @@ module threaded_insert_hole() {
 }
 
 module countersink(shaft_diameter, head_size, shaft_length = 50, head_length = 50) {
-    segments = 15;
-    cylinder(d = head_size, h = head_length, $fn = segments);
+    cylinder(d = head_size, h = head_length);
     translate([0, 0, -1.99]) {
-        cylinder(d1 = shaft_diameter, d2 = head_size, h = 2, $fn = segments);
+        cylinder(d1 = shaft_diameter, d2 = head_size, h = 2);
     }
     translate([0, 0, -shaft_length]) {
-        cylinder(d = shaft_diameter, h = shaft_length, $fn = segments);
+        cylinder(d = shaft_diameter, h = shaft_length);
     }
 }
 
