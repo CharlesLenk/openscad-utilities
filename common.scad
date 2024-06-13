@@ -1,7 +1,7 @@
 $fa = $preview ? 1.6 : 0.8;
 $fs = $preview ? 0.8 : 0.4;
 
-function sphere_cut_radius(dist_from_center, r, d) = 
+function sphere_cut_radius(dist_from_center, r, d) =
 	let(
 		radius = is_undef(r) ? d/2 : r
 	) sqrt(radius^2 - dist_from_center^2);
@@ -29,7 +29,7 @@ module rotate_with_offset_origin(origin_offset, angle) {
 
 module capped_cylinder(d, h, point_d = 0) {
 	fix_preview() cylinder(d = d, h = h - d/2 + point_d/2);
-	translate([0, 0, h - d/2 + point_d/2]) cylinder(d1 = d, d2 = point_d, h = d/2 - point_d/2); 
+	translate([0, 0, h - d/2 + point_d/2]) cylinder(d1 = d, d2 = point_d, h = d/2 - point_d/2);
 }
 
 module cube_one_round_corner(vector, corner_r) {
@@ -57,7 +57,7 @@ module torus(d1, d2) {
 
 module threaded_insert_hole() {
     insert_height = 3.5;
-    
+
     translate([0, 0, -insert_height + 0.01]) {
         cylinder(d1 = 3.9, d2 = 4.1, h = insert_height, $fn = 15);
     }
@@ -92,28 +92,28 @@ module rounded_corner(d, h, top_d, bottom_d) {
 module rounded_square(vector, d, front_d, back_d) {
 	front_r = is_undef(front_d) ? d/2 : front_d/2;
 	back_r = is_undef(back_d) ? d/2 : back_d/2;
-	
+
 	rounded_square_2(vector, back_r, back_r, front_r, front_r);
 }
 
 module rounded_square_2(vector, c1 = 0, c2 = 0, c3 = 0, c4 = 0) {
 	x = vector[0];
 	y = vector[1];
-	
+
 	points = [
 		if (c1 == 0) [[0, 0]] else translate_points([c1, c1], arc_points(c1, 180, 270)),
 		if (c2 == 0) [[x, 0]] else translate_points([x - c2, c2], arc_points(c2, 270, 360)),
 		if (c3 == 0) [[x, y]] else translate_points([x - c3, y - c3], arc_points(c3, 0, 90)),
 		if (c4 == 0) [[0, y]] else translate_points([c4, y - c4], arc_points(c4, 90, 180))
 	];
-	
+
 	polygon(flatten(points));
 }
 
 function flatten(l) = [ for (a = l) for (b = a) b ];
 
 function translate_points(vector, points) =
-	[for (i = [0 : len(points) - 1]) 
+	[for (i = [0 : len(points) - 1])
 		[points[i][0] + vector[0], points[i][1] + vector[1]]
 	];
 
@@ -136,7 +136,7 @@ function get_opposite(angle, adjacent) = adjacent * tan(angle);
 function is_undef_or_0(value) = is_undef(value) || value == 0;
 
 module rounded_cube(vector, d, front_d, back_d, top_d, bottom_d, center = false) {
-	if (is_undef_or_0(d) && is_undef_or_0(front_d) && is_undef_or_0(back_d) 
+	if (is_undef_or_0(d) && is_undef_or_0(front_d) && is_undef_or_0(back_d)
 		&& is_undef_or_0(top_d) && is_undef_or_0(bottom_d)
 	) {
 		cube(vector, center);
@@ -145,12 +145,12 @@ module rounded_cube(vector, d, front_d, back_d, top_d, bottom_d, center = false)
 		y = vector[1];
 		z = vector[2];
 		d = is_undef_or_0(d) ? 0.001 : d;
-		
+
 		front_d = is_undef(front_d) ? d : front_d;
 		back_d = is_undef(back_d) ? d : back_d;
 		top_d = is_undef(top_d) ? min(front_d, back_d) : top_d;
 		bottom_d = is_undef(bottom_d) ? min(front_d, back_d) : bottom_d;
-		
+
 		assert(top_d <= front_d, str("top_d ", top_d, " must be <= front_d ", front_d));
 		assert(top_d <= back_d, str("top_d ", top_d, " must be <= back_d ", back_d));
 		assert(bottom_d <= front_d, str("bottom_d ", bottom_d, " must be <= front_d ", front_d));
@@ -171,7 +171,7 @@ module rounded_cube(vector, d, front_d, back_d, top_d, bottom_d, center = false)
 			}
 		}
 	}
-	
+
 	module corner(d, h, top_d, bottom_d) {
 		translate([-d/2, -d/2]) {
 			rotate_extrude(angle = 90) rounded_corner(d, h, top_d, bottom_d);
@@ -181,31 +181,31 @@ module rounded_cube(vector, d, front_d, back_d, top_d, bottom_d, center = false)
 
 module dodecahedron(height, d) {
     t = (1 + sqrt(5))/2;
-    
+
     size_factor = t * 0.5 * (height - 2 * d) / sqrt(2.5 + (11/10 * sqrt(5)));
-    
-    rotate([0, atan(t), 0]) { 
+
+    rotate([0, atan(t), 0]) {
         hull() {
             translate([size_factor, size_factor, size_factor]) sphere(d);
             translate([size_factor, -size_factor, size_factor]) sphere(d);
             translate([size_factor, size_factor, -size_factor]) sphere(d);
             translate([size_factor, -size_factor, -size_factor]) sphere(d);
-            
+
             translate([-size_factor, size_factor, size_factor]) sphere(d);
             translate([-size_factor, -size_factor, size_factor]) sphere(d);
             translate([-size_factor, size_factor, -size_factor]) sphere(d);
             translate([-size_factor, -size_factor, -size_factor]) sphere(d);
-            
+
             translate([t * size_factor, size_factor/t, 0]) sphere(d);
             translate([t * size_factor, -size_factor/t, 0]) sphere(d);
             translate([t * -size_factor, size_factor/t, 0]) sphere(d);
             translate([t * -size_factor, -size_factor/t, 0]) sphere(d);
-            
+
             translate([0, t * size_factor, size_factor/t]) sphere(d);
             translate([0, t * size_factor, -size_factor/t]) sphere(d);
             translate([0, t * -size_factor, size_factor/t]) sphere(d);
             translate([0, t * -size_factor, -size_factor/t]) sphere(d);
-            
+
             translate([size_factor/t, 0, t * size_factor]) sphere(d);
             translate([size_factor/t, 0, t * -size_factor]) sphere(d);
             translate([-size_factor/t, 0, t * size_factor]) sphere(d);
@@ -225,14 +225,14 @@ module place_at_corners(x, y, center = false) {
 
 module bolt(diameter, length, root, crest, pitch, depth, thread_offset = 0) {
 	diameter = diameter - 2 * depth + thread_offset;
-	
+
 	segment_angle = $preview ? 10 : 5;
 	segments_per_loop = 360 / segment_angle;
 	height_per_segment = pitch / segments_per_loop;
 	number_of_loops = floor(length/pitch) + 2;
-	
+
 	intersection () {
-		translate ([0, 0, -pitch]) { 
+		translate ([0, 0, -pitch]) {
 			for (i = [0 : number_of_loops * segments_per_loop - 1]) {
 				hull () {
 					translate ([0, 0, i * height_per_segment]) {
@@ -240,7 +240,7 @@ module bolt(diameter, length, root, crest, pitch, depth, thread_offset = 0) {
 							thread_segment();
 						}
 					}
-					translate ([0, 0, (i + 1) * height_per_segment]) { 
+					translate ([0, 0, (i + 1) * height_per_segment]) {
 						rotate((i + 1) * segment_angle) {
 							thread_segment();
 						}
@@ -253,8 +253,8 @@ module bolt(diameter, length, root, crest, pitch, depth, thread_offset = 0) {
 		}
 	}
 	cylinder (d = diameter + 0.1, h = length);
-	
-	module thread_segment() {		
+
+	module thread_segment() {
 		thread_width = pitch - root;
 		translate([0, diameter/2, 0]) {
 			hull() {
@@ -263,7 +263,7 @@ module bolt(diameter, length, root, crest, pitch, depth, thread_offset = 0) {
 				}
 				translate([0, 0, -crest/2 + thread_width/2 - thread_offset/2]) {
 					cube([0.001, depth, crest + thread_offset]);
-				} 
+				}
 			}
 		}
 	}
@@ -293,4 +293,8 @@ module fix_preview() {
 	} else {
 		children();
 	}
+}
+
+module echo_cam() {
+    echo(str("\n",round($vpt[0]),",",round($vpt[1]),",",round($vpt[2]),",",round($vpr[0]),",",round($vpr[1]),",",round($vpr[2]),",",round($vpd),"\n"));
 }
