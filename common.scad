@@ -135,6 +135,8 @@ function get_opposite(angle, adjacent) = adjacent * tan(angle);
 
 function is_undef_or_0(value) = is_undef(value) || value == 0;
 
+function is_positive(value) = !is_undef(value) && value > 0;
+
 module rounded_cube(vector, d, front_d, back_d, top_d, bottom_d, center = false) {
 	if (is_undef_or_0(d) && is_undef_or_0(front_d) && is_undef_or_0(back_d)
 		&& is_undef_or_0(top_d) && is_undef_or_0(bottom_d)
