@@ -96,7 +96,7 @@ module rounded_square(vector, d, front_d, back_d) {
 	rounded_square_2(vector, back_r, back_r, front_r, front_r);
 }
 
-module rounded_square_2(vector, c1 = 0, c2 = 0, c3 = 0, c4 = 0) {
+module rounded_square_2(vector, c1 = 0, c2 = 0, c3 = 0, c4 = 0, center = false) {
 	x = vector[0];
 	y = vector[1];
 
@@ -107,7 +107,9 @@ module rounded_square_2(vector, c1 = 0, c2 = 0, c3 = 0, c4 = 0) {
 		if (c4 == 0) [[0, y]] else translate_points([c4, y - c4], arc_points(c4, 90, 180))
 	];
 
-	polygon(flatten(points));
+    translate(center ? [-x/2, -y/2] : [0, 0]) {
+	    polygon(flatten(points));
+    }
 }
 
 function flatten(l) = [ for (a = l) for (b = a) b ];
@@ -127,11 +129,15 @@ function arc_points(r, start_angle, stop_angle) =
 	);
 
 module wedge(angle, y, z) {
-	x = get_opposite(angle/2, y);
+	x = get_opposite_toa(angle/2, y);
 	linear_extrude(z) polygon([[0, 0], [x, y], [-x, y]]);
 }
 
-function get_opposite(angle, adjacent) = adjacent * tan(angle);
+function get_opposite_toa(angle, adjacent) = adjacent * tan(angle);
+
+function get_opposite_soh(angle, hypoteneuse) = hypoteneuse * sin(angle);
+
+function get_adjacent(angle, hypoteneuse) = hypoteneuse * cos(angle);
 
 function is_undef_or_0(value) = is_undef(value) || value == 0;
 
