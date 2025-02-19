@@ -128,6 +128,10 @@ function arc_points(r, start_angle, stop_angle) =
 		[for(a = [start_angle : deg/segments : stop_angle]) [r * cos(a), r * sin(a)]]
 	);
 
+module pie_wedge(r, angle) {
+    polygon(flatten([[[0, 0]], arc_points(r, 0, angle)]));
+}
+
 module wedge(angle, y, z) {
 	x = get_opposite_toa(angle/2, y);
 	linear_extrude(z) polygon([[0, 0], [x, y], [-x, y]]);
