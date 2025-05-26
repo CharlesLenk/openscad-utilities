@@ -132,9 +132,13 @@ module pie_wedge(r, angle) {
     polygon(flatten([[[0, 0]], arc_points(r, 0, angle)]));
 }
 
-module wedge(angle, y, z) {
+module wedge_2d(angle, y) {
 	x = get_opposite_toa(angle/2, y);
-	linear_extrude(z) polygon([[0, 0], [x, y], [-x, y]]);
+	polygon([[0, 0], [x, y], [-x, y]]);
+}
+
+module wedge(angle, y, z) {
+	linear_extrude(z) wedge_2d(angle, y);
 }
 
 function get_opposite_toa(angle, adjacent) = adjacent * tan(angle);
