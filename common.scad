@@ -66,14 +66,19 @@ module threaded_insert_hole() {
     }
 }
 
-module countersink(shaft_diameter, head_size, shaft_length = 50, head_length = 50) {
-    cylinder(d = head_size, h = head_length);
-    translate([0, 0, -1.99]) {
-        cylinder(d1 = shaft_diameter, d2 = head_size, h = 2);
-    }
-    translate([0, 0, -shaft_length]) {
-        cylinder(d = shaft_diameter, h = shaft_length);
-    }
+module countersink(shaft_diameter, head_size, head_depth, shaft_length = 50, head_length = 50) {
+    head_depth = is_undef_or_0(head_depth) ? (head_size - shaft_diameter)/2 : head_depth;
+    rotate_extrude()
+        polygon(
+            [
+                [0, head_length],
+                [head_size/2, head_length],
+                [head_size/2, 0],
+                [shaft_diameter/2, -head_depth],
+                [shaft_diameter/2, -shaft_length],
+                [0, -shaft_length],
+            ]
+        );
 }
 
 module xy_cut(height = 0, from_top = false, size = 250) {
@@ -132,9 +137,13 @@ module pie_wedge(r, angle) {
     polygon(flatten([[[0, 0]], arc_points(r, 0, angle)]));
 }
 
-module wedge(angle, y, z) {
+module wedge_2d(angle, y) {
 	x = get_opposite_toa(angle/2, y);
-	linear_extrude(z) polygon([[0, 0], [x, y], [-x, y]]);
+	polygon([[0, 0], [x, y], [-x, y]]);
+}
+
+module wedge(angle, y, z) {
+	linear_extrude(z) wedge_2d(angle, y);
 }
 
 function get_opposite_toa(angle, adjacent) = adjacent * tan(angle);
