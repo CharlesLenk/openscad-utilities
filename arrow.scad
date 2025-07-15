@@ -1,4 +1,3 @@
-
 module arrow(head_width, length, center = false, arrow_color = "#EE4B2B") {
     end_width = 0.4 * head_width;
 	color(arrow_color) {

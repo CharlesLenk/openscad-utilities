@@ -1,4 +1,4 @@
-include <openscad-utilities/common.scad>
+include <common.scad>
 
 default_bump_depth = 0.3;
 default_snap_offset = 0.1;
@@ -68,13 +68,13 @@ module circle_snap_inner(
     bump_depth = is_undef(bump_depth) ? default_bump_depth : bump_depth;
     snap_offset = is_undef(snap_offset) ? default_snap_offset : snap_offset;
     inner_wall_width = is_undef(inner_wall_width) ? default_inner_wall_width : inner_wall_width;
-    outer_wall_width = is_undef(outer_wall_width) ? 
+    outer_wall_width = is_undef(outer_wall_width) ?
         calc_outer_wall_width(
             inner_wall_width,
             snap_offset,
             bump_depth
         ) : outer_wall_width;
-    tab_count = is_undef(tab_count) ? 
+    tab_count = is_undef(tab_count) ?
         calc_default_tab_count(
             outer_diameter,
             inner_wall_width,
@@ -88,7 +88,7 @@ module circle_snap_inner(
 		rotate_extrude()
 			translate([-inner_wall_width - outer_wall_width + outer_diameter/2, 0])
 				circle_snap_inner_2d(height, inner_wall_width, bump_d, bump_depth);
-		fix_preview() 
+		fix_preview()
 			circle_snap_tabs(
                 outer_diameter,
                 height,
@@ -119,7 +119,7 @@ module circle_snap_outer(
     snap_offset = is_undef(snap_offset) ? default_snap_offset : snap_offset;
     inner_wall_width = is_undef(inner_wall_width) ? default_inner_wall_width : inner_wall_width;
     outer_wall_width = is_undef(outer_wall_width) ? inner_wall_width + snap_offset + bump_depth : outer_wall_width;
-    tab_count = is_undef(tab_count) ? 
+    tab_count = is_undef(tab_count) ?
         calc_default_tab_count(
             outer_diameter,
             inner_wall_width,
