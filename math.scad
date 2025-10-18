@@ -7,9 +7,9 @@ function sphere_cut_radius(dist_from_center, r, d) =
 
 function get_opposite_toa(angle, adjacent) = adjacent * tan(angle);
 
-function get_opposite_soh(angle, hypoteneuse) = hypoteneuse * sin(angle);
+function get_opposite_soh(angle, hypotenuse) = hypotenuse * sin(angle);
 
-function get_adjacent(angle, hypoteneuse) = hypoteneuse * cos(angle);
+function get_adjacent(angle, hypotenuse) = hypotenuse * cos(angle);
 
 function is_undef_or_0(value) = is_undef(value) || value == 0;
 
