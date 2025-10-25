@@ -52,3 +52,9 @@ module place_at_corners(x, y, center = false) {
 		translate([x, y, 0]) children();
 	}
 }
+
+module fillet_2d(radius) {
+    offset(radius)
+        offset(-radius)
+            children();
+}
