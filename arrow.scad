@@ -1,5 +1,6 @@
 module arrow(head_width, length, center = false, arrow_color = "#EE4B2B") {
     end_width = 0.4 * head_width;
+    length = is_undef(length) ? 1.2 * head_width : length;
 	color(arrow_color) {
 		linear_extrude(0.1) {
             translate([0, center ? -length/2 : 0]) {
