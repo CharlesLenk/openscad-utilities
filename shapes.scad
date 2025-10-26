@@ -148,6 +148,7 @@ module rounded_cube(vector, d, front_d, back_d, top_d, bottom_d, center = false)
 }
 
 module dodecahedron(height, d) {
+    // Golden ratio
     t = (1 + sqrt(5))/2;
 
     size_factor = t * 0.5 * (height - 2 * d) / sqrt(2.5 + (11/10 * sqrt(5)));
