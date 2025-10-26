@@ -81,6 +81,24 @@ module rounded_square_2(vector, c1 = 0, c2 = 0, c3 = 0, c4 = 0, center = false) 
     }
 }
 
+module tombstone_2d(vector) {
+	x = vector[0];
+	y = vector[1];
+
+    assert(x >= y/2, "X dimension must be at least half Y dimension.");
+
+    rounded_square_2([x, y], c2 = y/2, c3 = y/2);
+}
+
+module tombstone(vector) {
+	x = vector[0];
+	y = vector[1];
+    z = vector[2];
+
+    linear_extrude(z)
+        tombstone_2d([x, y]);
+}
+
 function arc_points(r, start_angle, stop_angle) =
 	let(
 		n = $fn > 0 ? ($fn >= 3 ? $fn : 3) : ceil(max(min(360/$fa, r*2*PI/$fs), 5)),
@@ -148,37 +166,35 @@ module rounded_cube(vector, d, front_d, back_d, top_d, bottom_d, center = false)
 }
 
 module dodecahedron(height, d) {
-    // Golden ratio
-    t = (1 + sqrt(5))/2;
+    gr = golden_ratio;
+    vertex_offset = gr * 0.5 * (height - 2 * d) / sqrt(2.5 + (11/10 * sqrt(5)));
 
-    size_factor = t * 0.5 * (height - 2 * d) / sqrt(2.5 + (11/10 * sqrt(5)));
-
-    rotate([0, atan(t), 0]) {
+    rotate([0, atan(gr), 0]) {
         hull() {
-            translate([size_factor, size_factor, size_factor]) sphere(d);
-            translate([size_factor, -size_factor, size_factor]) sphere(d);
-            translate([size_factor, size_factor, -size_factor]) sphere(d);
-            translate([size_factor, -size_factor, -size_factor]) sphere(d);
+            translate([vertex_offset, vertex_offset, vertex_offset]) sphere(d);
+            translate([vertex_offset, -vertex_offset, vertex_offset]) sphere(d);
+            translate([vertex_offset, vertex_offset, -vertex_offset]) sphere(d);
+            translate([vertex_offset, -vertex_offset, -vertex_offset]) sphere(d);
 
-            translate([-size_factor, size_factor, size_factor]) sphere(d);
-            translate([-size_factor, -size_factor, size_factor]) sphere(d);
-            translate([-size_factor, size_factor, -size_factor]) sphere(d);
-            translate([-size_factor, -size_factor, -size_factor]) sphere(d);
+            translate([-vertex_offset, vertex_offset, vertex_offset]) sphere(d);
+            translate([-vertex_offset, -vertex_offset, vertex_offset]) sphere(d);
+            translate([-vertex_offset, vertex_offset, -vertex_offset]) sphere(d);
+            translate([-vertex_offset, -vertex_offset, -vertex_offset]) sphere(d);
 
-            translate([t * size_factor, size_factor/t, 0]) sphere(d);
-            translate([t * size_factor, -size_factor/t, 0]) sphere(d);
-            translate([t * -size_factor, size_factor/t, 0]) sphere(d);
-            translate([t * -size_factor, -size_factor/t, 0]) sphere(d);
+            translate([gr * vertex_offset, vertex_offset/gr, 0]) sphere(d);
+            translate([gr * vertex_offset, -vertex_offset/gr, 0]) sphere(d);
+            translate([gr * -vertex_offset, vertex_offset/gr, 0]) sphere(d);
+            translate([gr * -vertex_offset, -vertex_offset/gr, 0]) sphere(d);
 
-            translate([0, t * size_factor, size_factor/t]) sphere(d);
-            translate([0, t * size_factor, -size_factor/t]) sphere(d);
-            translate([0, t * -size_factor, size_factor/t]) sphere(d);
-            translate([0, t * -size_factor, -size_factor/t]) sphere(d);
+            translate([0, gr * vertex_offset, vertex_offset/gr]) sphere(d);
+            translate([0, gr * vertex_offset, -vertex_offset/gr]) sphere(d);
+            translate([0, gr * -vertex_offset, vertex_offset/gr]) sphere(d);
+            translate([0, gr * -vertex_offset, -vertex_offset/gr]) sphere(d);
 
-            translate([size_factor/t, 0, t * size_factor]) sphere(d);
-            translate([size_factor/t, 0, t * -size_factor]) sphere(d);
-            translate([-size_factor/t, 0, t * size_factor]) sphere(d);
-            translate([-size_factor/t, 0, t * -size_factor]) sphere(d);
+            translate([vertex_offset/gr, 0, gr * vertex_offset]) sphere(d);
+            translate([vertex_offset/gr, 0, gr * -vertex_offset]) sphere(d);
+            translate([-vertex_offset/gr, 0, gr * vertex_offset]) sphere(d);
+            translate([-vertex_offset/gr, 0, gr * -vertex_offset]) sphere(d);
         }
     }
 }
