@@ -205,11 +205,21 @@ module circle_snap_tabs(
     snap_offset,
     is_cut = false
 ) {
-	tab_width = 2 + (is_cut ? 2 * snap_offset : 0);
-	tab_len = inner_wall_width + outer_wall_width + snap_offset;
+	tab_width = tab_width + (is_cut ? 2 * snap_offset : 0);
+	tab_len = inner_wall_width + outer_wall_width/2 + snap_offset;
 	for (i = [0 : tab_count]) {
 		rotate(i * 360/tab_count)
-			translate([outer_diameter/2 - tab_len - snap_offset, -tab_width/2, 0])
-				cube([tab_len, tab_width, height]);
+            translate([0, 0, 0])
+                tab();
 	}
+
+    module tab() {
+        extrusion_angle = tab_width / (outer_diameter/2 - inner_wall_width - outer_wall_width) * (180 / PI);
+        rotate(-extrusion_angle/2)
+            rotate_extrude(extrusion_angle) {
+                translate([outer_diameter/2 - inner_wall_width - outer_wall_width - (is_cut ? 0.1 : 0), 0]) {
+                    square([tab_len, height]);
+                }
+            }
+    }
 }
