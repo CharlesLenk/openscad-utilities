@@ -216,7 +216,7 @@ module circle_snap_tabs(
     module tab() {
         extrusion_angle = tab_width / (outer_diameter/2 - inner_wall_width - outer_wall_width) * (180 / PI);
         rotate(-extrusion_angle/2)
-            rotate_extrude(extrusion_angle) {
+            rotate_extrude(angle = extrusion_angle) {
                 translate([outer_diameter/2 - inner_wall_width - outer_wall_width - (is_cut ? 0.1 : 0), 0]) {
                     square([tab_len, height]);
                 }

@@ -20,14 +20,6 @@ module rounded_cylinder(h, d, top_d = 0, bottom_d = 0, center = false) {
 	}
 }
 
-module torus(d1, d2) {
-    rotate_extrude() {
-        translate ([d1/2 + d2/2, 0, 0]) {
-            circle(d = d2);
-        }
-    }
-}
-
 module threaded_insert_hole() {
     insert_height = 3.5;
 
@@ -249,5 +241,29 @@ module rounded_vector(p1 = [0, 0, 0], p2 = [0, 0, 0], d) {
     hull() {
         translate(p1) sphere(d=d);
         translate(p2) sphere(d=d);
+    }
+}
+
+module torus(d1, d2) {
+    rotate_extrude() {
+        translate ([d1/2 + d2/2, 0, 0]) {
+            circle(d = d2);
+        }
+    }
+}
+
+module ring(d1, d2, h, center = false) {
+    translate([0, 0, center ? -h/2 : 0])
+        linear_extrude(h)
+            difference() {
+                circle(d = d1);
+                circle(d = d2);
+            }
+}
+
+module ring_2d(d1, d2) {
+    difference() {
+        circle(d = d1);
+        circle(d = d2);
     }
 }
