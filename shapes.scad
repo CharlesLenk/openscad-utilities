@@ -256,8 +256,8 @@ module ring(d1, d2, h, center = false, angle = 360) {
 
 module ring_2d(d1, d2, angle = 360) {
     difference() {
-        pie_wedge(d1/2, angle);
-        pie_wedge(d2/2, angle);
+        pie_wedge_2d(d1/2, angle);
+        pie_wedge_2d(d2/2, angle);
     }
 }
 
