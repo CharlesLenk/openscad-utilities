@@ -100,10 +100,6 @@ function arc_points(r, start_angle, stop_angle) =
 		[for(a = [start_angle : deg/segments : stop_angle]) [r * cos(a), r * sin(a)]]
 	);
 
-module pie_wedge(r, angle) {
-    polygon(flatten([[[0, 0]], arc_points(r, 0, angle)]));
-}
-
 module wedge_2d(angle, y) {
 	x = get_opposite_toa(angle/2, y);
 	polygon([[0, 0], [x, y], [-x, y]]);
@@ -252,18 +248,22 @@ module torus(d1, d2) {
     }
 }
 
-module ring(d1, d2, h, center = false) {
+module ring(d1, d2, h, center = false, angle = 360) {
     translate([0, 0, center ? -h/2 : 0])
         linear_extrude(h)
-            difference() {
-                circle(d = d1);
-                circle(d = d2);
-            }
+            ring_2d(d1, d2, angle);
 }
 
-module ring_2d(d1, d2) {
+module ring_2d(d1, d2, angle = 360) {
     difference() {
-        circle(d = d1);
-        circle(d = d2);
+        pie_wedge(d1/2, angle);
+        pie_wedge(d2/2, angle);
     }
+}
+
+module pie_wedge_2d(r, angle = 360) {
+    if (angle == 360)
+        circle(r);
+    else
+        polygon(flatten([[[0, 0]], arc_points(r, 0, angle)]));
 }
