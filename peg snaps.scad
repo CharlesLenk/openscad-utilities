@@ -2,28 +2,28 @@ include <common.scad>
 
 default_size = 5;
 default_len = 10;
-default_bump_depth = 0.3;
+default_bump_depth = 0.4;
 
-square_snap_peg();
-rotate(180) square_snap_peg();
+// square_snap_peg();
+// rotate(180) square_snap_peg();
 
-translate([0, 2 * default_size]) {
-    round_snap_peg();
-    rotate(180) round_snap_peg();
+// translate([0, 2 * default_size]) {
+//     round_snap_peg();
+//     rotate(180) round_snap_peg();
+// }
+
+difference() {
+test_cube();
+rotate([0, 90, 0])
+round_snap_peg(is_cut = true);
 }
 
-// difference() {
-// test_cube();
-// rotate([0, 90, 0])
-// round_snap_peg(is_cut = true);
-// }
-
-// translate([15, 0])
-// difference() {
-// test_cube();
-// rotate([0, 90, 0])
-// square_snap_peg(is_cut = true);
-// }
+translate([15, 0])
+difference() {
+test_cube();
+rotate([0, 90, 0])
+square_snap_peg(is_cut = true);
+}
 
 
 module test_cube() {
@@ -47,22 +47,20 @@ module round_snap_peg(d = default_size, l = default_len, bump_depth = default_bu
             }
             if (!is_cut) {
                 bottom_cut_size = d + 2 * bump_depth;
-                translate([0, -bottom_cut_size/2, -bottom_cut_size/2 + 0.25 * d]) {
-                    cube([l, bottom_cut_size, bottom_cut_size]);
+                translate([0, -bottom_cut_size/2, -d/2 + 0.15 * d]) {
+                    cube([l, bottom_cut_size, d - 0.2 * d]);
                 }
             }
         }
         if (!is_cut)
-            translate([1.2 * l, cut_width/2, -cut_height/2])
-                rotate(180)
-                    tombstone([l, cut_width, cut_height]);
+            snap_cut(default_size, default_len);
     }
 }
 
 module square_snap_peg(size = default_size, l = default_len, bump_depth = default_bump_depth, is_cut = false) {
     cut_offset = is_cut ? 0.15 : 0;
     cut_width = size/3;
-    snap_angle = 110;
+    snap_angle = 100;
 
     if (is_cut) {
         bump_depth = bump_depth + cut_offset;
@@ -78,20 +76,25 @@ module square_snap_peg(size = default_size, l = default_len, bump_depth = defaul
                 }
         }
     } else {
-        translate([0, 0, -size/2]) {
-            linear_extrude(size) {
-                difference() {
+        difference() {
+            translate([0, 0, -size/2]) {
+                linear_extrude(size) {
                     translate([0, -size/2])
                         rounded_square_2([l, size], c2 = 1, c3 = 1);
-                    if (!is_cut)
-                        translate([1.2 * l, cut_width/2])
-                            rotate(180)
-                                tombstone_2d([l, cut_width]);
+                    reflect([0, 1, 0])
+                        translate([0.5 * l, -size/2 - bump_depth])
+                            wedge_2d(snap_angle, bump_depth);
                 }
-                reflect([0, 1, 0])
-                    translate([0.5 * l, -size/2 - bump_depth])
-                        wedge_2d(snap_angle, bump_depth);
             }
+            if (!is_cut)
+                snap_cut(default_size, default_len);
         }
     }
+}
+
+module snap_cut(snap_size, snap_length) {
+    cut_width = snap_size/3;
+    height = 1.5 * snap_size;
+    translate([0.15 * snap_length, -cut_width/2, -height/2])
+        rounded_cube([0.7 * snap_length, cut_width, height], d = cut_width, top_d = 0, bottom_d = 0);
 }
