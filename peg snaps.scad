@@ -4,26 +4,26 @@ default_size = 5;
 default_len = 10;
 default_bump_depth = 0.4;
 
-// square_snap_peg();
-// rotate(180) square_snap_peg();
+square_snap_peg();
+rotate(180) square_snap_peg();
 
-// translate([0, 2 * default_size]) {
-//     round_snap_peg();
-//     rotate(180) round_snap_peg();
+translate([0, 2 * default_size]) {
+    round_snap_peg();
+    rotate(180) round_snap_peg();
+}
+
+// difference() {
+// test_cube();
+// rotate([0, 90, 0])
+// round_snap_peg(is_cut = true);
 // }
 
-difference() {
-test_cube();
-rotate([0, 90, 0])
-round_snap_peg(is_cut = true);
-}
-
-translate([15, 0])
-difference() {
-test_cube();
-rotate([0, 90, 0])
-square_snap_peg(is_cut = true);
-}
+// translate([15, 0])
+// difference() {
+// test_cube();
+// rotate([0, 90, 0])
+// square_snap_peg(is_cut = true);
+// }
 
 
 module test_cube() {
