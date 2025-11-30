@@ -2,30 +2,63 @@ include <common.scad>
 
 default_size = 5;
 default_len = 10;
-default_bump_depth = 0.3;
-default_cut_offset = 0.2;
-
+default_bump_depth = 0.4;
+default_cut_offset = 0.15;
+bump_d = 1.5;
 
 square_snap_peg();
 rotate(180)
-    square_snap_peg(is_cut = true);
+    square_snap_peg();
 
 translate([0, 2 * default_size]) {
     round_snap_peg();
     rotate(180)
-        round_snap_peg(is_cut = true);
+        round_snap_peg();
+}
+
+//test();
+
+module test() {
+    square_snap_peg();
+    rotate(180)
+        square_snap_peg(is_cut = true);
+
+    xy_cut(from_top = true) {
+        translate([0, 2 * default_size]) {
+            difference() {
+                square_snap_peg(is_cut = true);
+                square_snap_peg();
+            }
+        }
+    }
+
+    translate([0, 4 * default_size]) {
+        round_snap_peg();
+        rotate(180)
+            round_snap_peg(is_cut = true);
+    }
+
+    xy_cut(from_top = true) {
+        translate([0, 6 * default_size]) {
+            difference() {
+                round_snap_peg(is_cut = true);
+                round_snap_peg();
+            }
+        }
+    }
 }
 
 module round_snap_peg(d = default_size, l = default_len, bump_depth = default_bump_depth, is_cut = false) {
     cut_offset = is_cut ? default_cut_offset : 0;
     cut_height = d + 2 * bump_depth;
-    bump_d = 1.5 + cut_offset;
+    bump_d_cut_adjusted = bump_d + cut_offset;
+
     difference() {
         intersection() {
             rotate([0, 90, 0]) {
-                rounded_cylinder(d = d + cut_offset, h = l + cut_offset, top_d = 2);
+                rounded_cylinder(d = d + 2 * cut_offset, h = l + cut_offset, top_d = default_size/3);
                 translate([0, 0, 0.5 * l])
-                    torus(d1 = d - 2 * bump_d + 2 * bump_depth + cut_offset, d2 = bump_d);
+                    torus(d1 = d - 2 * bump_d + 2 * bump_depth, d2 = bump_d_cut_adjusted);
             }
             if (!is_cut) {
                 bottom_cut_size = d + 2 * bump_depth;
@@ -42,25 +75,41 @@ module round_snap_peg(d = default_size, l = default_len, bump_depth = default_bu
 
 module square_snap_peg(size = default_size, l = default_len, bump_depth = default_bump_depth, is_cut = false) {
     cut_offset = is_cut ? default_cut_offset : 0;
-    snap_angle = 100;
-    bump_d = 1.5 + cut_offset;
 
     if (is_cut) {
-        bump_depth = bump_depth + cut_offset;
-        cut_size = size + cut_offset;
-        snap_height = 2 * get_opposite(angle = snap_angle/2, adjacent = bump_depth);
+        cut_size = size + 2 * cut_offset;
+        bump_size = size + 2 * bump_depth + 2 * cut_offset;
+        bump_d_cut_adjusted = bump_d + 2 * cut_offset;
         rotate([0, 90, 0]) {
             translate([-cut_size/2, -cut_size/2])
-                cube([cut_size, cut_size, l]);
-            translate([0, 0, 0.5 * l])
-                rounded_cube([size + 2 * bump_depth, size + 2 * bump_depth, bump_d], d = bump_d, center = true);
+                cube([cut_size, cut_size, l + cut_offset]);
+            translate([0, 0, 0.5 * l]) {
+                for(i = [0 : 3])
+                    rotate(i * 90)
+                        translate([bump_size/2, 0])
+                            intersection() {
+                                translate([-bump_d_cut_adjusted/2, bump_size/2])
+                                    rotate([90, 0, 0])
+                                        cylinder(h = bump_size, d = bump_d_cut_adjusted);
+                                translate([0, 0, -bump_d_cut_adjusted/2])
+                                    linear_extrude(bump_d_cut_adjusted)
+                                        polygon(
+                                            [
+                                                [0, bump_size/2],
+                                                [-bump_d_cut_adjusted, bump_size/2 - bump_d_cut_adjusted],
+                                                [-bump_d_cut_adjusted, -bump_size/2 + bump_d_cut_adjusted],
+                                                [0, -bump_size/2],
+                                            ]
+                                        );
+                            }
+            }
         }
     } else {
         difference() {
             translate([0, 0, -size/2]) {
                 linear_extrude(size) {
                     translate([0, -size/2])
-                        rounded_square_2([l, size], c2 = 1, c3 = 1);
+                        rounded_square_2([l, size], c2 = default_size/6, c3 = default_size/6);
                     reflect([0, 1, 0])
                         translate([0.5 * l, -size/2 - bump_depth + bump_d/2])
                             circle(d = bump_d);
