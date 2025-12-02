@@ -6,25 +6,57 @@ default_bump_depth = 0.4;
 default_cut_offset = 0.15;
 bump_d = 1.5;
 
-square_snap_peg();
-rotate(180)
-    square_snap_peg();
+if ($preview)
+    working_preview();
+else
+    snap_test();
 
-translate([0, 2 * default_size]) {
-    round_snap_peg();
+module snap_test() {
+    square_snap_peg();
     rotate(180)
+        square_snap_peg();
+
+    translate([0, 2 * default_size]) {
         round_snap_peg();
+        rotate(180)
+            round_snap_peg();
+    }
+
+    translate([0, 4 * default_size])
+        snap_holders();
+
+    translate([0, 6 * default_size])
+        snap_holders();
+
+    module snap_holders() {
+        difference() {
+            test_cube();
+                rotate([0, 90, 0])
+                    round_snap_peg(is_cut = true);
+        }
+        translate([2 * default_size, 0])
+            difference() {
+                test_cube();
+                rotate([0, 90, 0])
+                    square_snap_peg(is_cut = true);
+            }
+    }
+
+    module test_cube() {
+        size = default_size + 3;
+        height = default_len + 1.5;
+        translate([-size/2, -size/2, -height])
+            cube([size, size, height]);
+    }
 }
 
-//test();
-
-module test() {
+module working_preview() {
     square_snap_peg();
     rotate(180)
         square_snap_peg(is_cut = true);
 
-    xy_cut(from_top = true) {
-        translate([0, 2 * default_size]) {
+    translate([0, 2 * default_size]) {
+        xy_cut(from_top = true, size = 2.5 * default_len) {
             difference() {
                 square_snap_peg(is_cut = true);
                 square_snap_peg();
@@ -38,8 +70,8 @@ module test() {
             round_snap_peg(is_cut = true);
     }
 
-    xy_cut(from_top = true) {
-        translate([0, 6 * default_size]) {
+    translate([0, 6 * default_size]) {
+        xy_cut(from_top = true, size = 2.5 * default_len) {
             difference() {
                 round_snap_peg(is_cut = true);
                 round_snap_peg();
@@ -122,7 +154,7 @@ module square_snap_peg(size = default_size, l = default_len, bump_depth = defaul
 }
 
 module snap_cut(snap_size, snap_length) {
-    cut_width = snap_size - 2.4;
+    cut_width = snap_size - 3;
     height = 1.5 * snap_size;
     translate([0.15 * snap_length, -cut_width/2, -height/2])
         rounded_cube([0.7 * snap_length, cut_width, height], d = cut_width, top_d = 0, bottom_d = 0);
