@@ -101,7 +101,7 @@ function arc_points(r, start_angle, stop_angle) =
 	);
 
 module wedge_2d(angle, y) {
-	x = get_opposite_toa(angle/2, y);
+	x = get_opposite(angle/2, adjacent = y);
 	polygon([[0, 0], [x, y], [-x, y]]);
 }
 

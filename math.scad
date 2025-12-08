@@ -5,9 +5,8 @@ function sphere_cut_radius(dist_from_center, r, d) =
 		radius = is_undef(r) ? d/2 : r
 	) sqrt(radius^2 - dist_from_center^2);
 
-function get_opposite_toa(angle, adjacent) = adjacent * tan(angle);
-
-function get_opposite_soh(angle, hypotenuse) = hypotenuse * sin(angle);
+function get_opposite(angle, adjacent, hypotenuse) = 
+	is_undef(adjacent) ? hypotenuse * sin(angle) : adjacent * tan(angle);
 
 function get_adjacent(angle, hypotenuse) = hypotenuse * cos(angle);
 
