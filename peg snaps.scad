@@ -101,7 +101,7 @@ module round_snap_peg(d = default_size, l = default_len, bump_depth = default_bu
             }
         }
         if (!is_cut)
-            snap_cut(default_size, default_len);
+            snap_cut(d, l);
     }
 }
 
@@ -148,7 +148,7 @@ module square_snap_peg(size = default_size, l = default_len, bump_depth = defaul
                 }
             }
             if (!is_cut)
-                snap_cut(default_size, default_len);
+                snap_cut(size, l);
         }
     }
 }
