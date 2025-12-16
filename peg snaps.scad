@@ -88,7 +88,7 @@ module round_snap_peg(d = default_size, l = default_len, bump_depth = default_bu
     difference() {
         intersection() {
             rotate([0, 90, 0]) {
-                rounded_cylinder(d = d + 2 * cut_offset, h = l + cut_offset, top_d = default_size/3);
+                rounded_cylinder(d = d + 2 * cut_offset, h = l + cut_offset, top_d = d/3);
                 translate([0, 0, 0.5 * l])
                     torus(d1 = d - 2 * bump_d + 2 * bump_depth, d2 = bump_d_cut_adjusted);
             }
@@ -101,7 +101,7 @@ module round_snap_peg(d = default_size, l = default_len, bump_depth = default_bu
             }
         }
         if (!is_cut)
-            snap_cut(default_size, default_len);
+            snap_cut(d, l);
     }
 }
 
@@ -141,14 +141,14 @@ module square_snap_peg(size = default_size, l = default_len, bump_depth = defaul
             translate([0, 0, -size/2]) {
                 linear_extrude(size) {
                     translate([0, -size/2])
-                        rounded_square_2([l, size], c2 = default_size/6, c3 = default_size/6);
+                        rounded_square_2([l, size], c2 = size/6, c3 = size/6);
                     reflect([0, 1, 0])
                         translate([0.5 * l, -size/2 - bump_depth + bump_d/2])
                             circle(d = bump_d);
                 }
             }
             if (!is_cut)
-                snap_cut(default_size, default_len);
+                snap_cut(size, l);
         }
     }
 }
