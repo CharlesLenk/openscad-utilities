@@ -57,7 +57,12 @@ module rounded_square(vector, d, front_d, back_d) {
 	rounded_square_2(vector, back_r, back_r, front_r, front_r);
 }
 
-module rounded_square_2(vector, c1 = 0, c2 = 0, c3 = 0, c4 = 0, center = false) {
+module rounded_square_2(vector, c1, c2, c3, c4, r = 0, center = false) {
+	c1 = is_undef(c1) ? r : c1;
+	c2 = is_undef(c2) ? r : c2;
+	c3 = is_undef(c3) ? r : c3;
+	c4 = is_undef(c4) ? r : c4;
+
 	x = vector[0];
 	y = vector[1];
 
