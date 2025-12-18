@@ -4,6 +4,7 @@ default_size = 5;
 default_len = 10;
 default_bump_depth = 0.4;
 default_cut_offset = 0.15;
+default_cut_length_offset = 0.3;
 bump_d = 1.5;
 
 if ($preview)
@@ -82,13 +83,14 @@ module working_preview() {
 
 module round_snap_peg(d = default_size, l = default_len, bump_depth = default_bump_depth, is_cut = false) {
     cut_offset = is_cut ? default_cut_offset : 0;
+    cut_len_offset = is_cut ? default_cut_length_offset : 0;
     cut_height = d + 2 * bump_depth;
     bump_d_cut_adjusted = bump_d + cut_offset;
 
     difference() {
         intersection() {
             rotate([0, 90, 0]) {
-                rounded_cylinder(d = d + 2 * cut_offset, h = l + cut_offset, top_d = d/3);
+                rounded_cylinder(d = d + 2 * cut_offset, h = l + cut_len_offset, top_d = d/3);
                 translate([0, 0, 0.5 * l])
                     torus(d1 = d - 2 * bump_d + 2 * bump_depth, d2 = bump_d_cut_adjusted);
             }
@@ -107,6 +109,7 @@ module round_snap_peg(d = default_size, l = default_len, bump_depth = default_bu
 
 module square_snap_peg(size = default_size, l = default_len, bump_depth = default_bump_depth, is_cut = false) {
     cut_offset = is_cut ? default_cut_offset : 0;
+    cut_len_offset = is_cut ? default_cut_length_offset : 0;
 
     if (is_cut) {
         cut_size = size + 2 * cut_offset;
@@ -114,7 +117,7 @@ module square_snap_peg(size = default_size, l = default_len, bump_depth = defaul
         bump_d_cut_adjusted = bump_d + 2 * cut_offset;
         rotate([0, 90, 0]) {
             translate([-cut_size/2, -cut_size/2])
-                cube([cut_size, cut_size, l + cut_offset]);
+                cube([cut_size, cut_size, l + cut_len_offset]);
             translate([0, 0, 0.5 * l]) {
                 for(i = [0 : 3])
                     rotate(i * 90)
