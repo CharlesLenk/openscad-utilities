@@ -15,9 +15,16 @@ module cube_one_round_corner(vector, corner_r) {
 }
 
 module rounded_cylinder(h, d, top_d = 0, bottom_d = 0, center = false) {
-	translate([0, 0, center ? -h/2: 0]) {
-		rotate_extrude() rounded_corner(d, h, top_d, bottom_d);
-	}
+	rounded_cylinder_2(h, d, bottom_r = bottom_d/2, top_r = top_d/2, center = center);
+}
+
+module rounded_cylinder_2(h, d, edge_r = 0, bottom_r, top_r, center = false) {
+	bottom_r = is_undef(bottom_r) ? edge_r : bottom_r;
+	top_r = is_undef(top_r) ? edge_r : top_r;
+
+	translate([0, 0, center ? -h/2: 0])
+		rotate_extrude()
+			rounded_square_2([d/2, h], c2 = bottom_r, c3 = top_r);
 }
 
 module threaded_insert_hole() {
