@@ -13,16 +13,3 @@ module fix_preview() {
 		children();
 	}
 }
-
-// Echoes the camera coordinates of the current view to the console.
-module echo_cam() {
-    echo(
-        str(
-            "\n",
-            round($vpt[0]),",",round($vpt[1]),",",round($vpt[2]),",",
-            round($vpr[0]),",",round($vpr[1]),",",round($vpr[2]),",",
-            round($vpd),
-            "\n"
-        )
-    );
-}
