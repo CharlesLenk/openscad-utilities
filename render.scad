@@ -1,6 +1,6 @@
-// Dynamically scale the number of facets based on preview or render.
-$fa = $preview ? 1.6 : 0.8;
-$fs = $preview ? 0.8 : 0.4;
+// Set the angle and length of facets to produce smooth surfaces when 3D printing.
+$fa = 1.6;
+$fs = 0.6;
 
 // Removes shimmer caused by infinitely thin surfaces in preview mode by slightly scaling and shifting the current
 // object only when in preview mode.
