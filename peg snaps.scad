@@ -4,7 +4,6 @@ default_size = 5;
 default_len = 10;
 default_bump_depth = 0.4;
 default_cut_offset = 0.15;
-default_cut_length_offset = 0.3;
 bump_d = 1.5;
 
 if ($preview)
@@ -33,13 +32,13 @@ module snap_test() {
         difference() {
             test_cube();
                 rotate([0, 90, 0])
-                    round_snap_peg(is_cut = true);
+                    round_snap_peg(cut_offset = default_cut_offset);
         }
         translate([2 * default_size, 0])
             difference() {
                 test_cube();
                 rotate([0, 90, 0])
-                    square_snap_peg(is_cut = true);
+                    square_snap_peg(cut_offset = default_cut_offset);
             }
     }
 
@@ -54,12 +53,12 @@ module snap_test() {
 module working_preview() {
     square_snap_peg();
     rotate(180)
-        square_snap_peg(is_cut = true);
+        square_snap_peg(cut_offset = default_cut_offset);
 
     translate([0, 2 * default_size]) {
         xy_cut(from_top = true, size = 2.5 * default_len) {
             difference() {
-                square_snap_peg(is_cut = true);
+                square_snap_peg(cut_offset = default_cut_offset);
                 square_snap_peg();
             }
         }
@@ -68,33 +67,31 @@ module working_preview() {
     translate([0, 4 * default_size]) {
         round_snap_peg();
         rotate(180)
-            round_snap_peg(is_cut = true);
+            round_snap_peg(cut_offset = default_cut_offset);
     }
 
     translate([0, 6 * default_size]) {
         xy_cut(from_top = true, size = 2.5 * default_len) {
             difference() {
-                round_snap_peg(is_cut = true);
+                round_snap_peg(cut_offset = default_cut_offset);
                 round_snap_peg();
             }
         }
     }
 }
 
-module round_snap_peg(d = default_size, l = default_len, bump_depth = default_bump_depth, is_cut = false) {
-    cut_offset = is_cut ? default_cut_offset : 0;
-    cut_len_offset = is_cut ? default_cut_length_offset : 0;
+module round_snap_peg(d = default_size, l = default_len, bump_depth = default_bump_depth, cut_offset = 0) {
     cut_height = d + 2 * bump_depth;
     bump_d_cut_adjusted = bump_d + cut_offset;
 
     difference() {
         intersection() {
             rotate([0, 90, 0]) {
-                rounded_cylinder(d = d + 2 * cut_offset, h = l + cut_len_offset, top_d = d/3);
+                rounded_cylinder(d = d + 2 * cut_offset, h = l + cut_offset, top_d = d/3);
                 translate([0, 0, 0.5 * l])
                     torus(d1 = d - 2 * bump_d + 2 * bump_depth, d2 = bump_d_cut_adjusted);
             }
-            if (!is_cut) {
+            if (cut_offset == 0) {
                 bottom_cut_size = d + 2 * bump_depth;
                 cube_h = 0.7 * d;
                 translate([0, -bottom_cut_size/2, -cube_h/2]) {
@@ -102,22 +99,19 @@ module round_snap_peg(d = default_size, l = default_len, bump_depth = default_bu
                 }
             }
         }
-        if (!is_cut)
+        if (cut_offset == 0)
             snap_cut(d, l);
     }
 }
 
-module square_snap_peg(size = default_size, l = default_len, bump_depth = default_bump_depth, is_cut = false) {
-    cut_offset = is_cut ? default_cut_offset : 0;
-    cut_len_offset = is_cut ? default_cut_length_offset : 0;
-
-    if (is_cut) {
+module square_snap_peg(size = default_size, l = default_len, bump_depth = default_bump_depth, cut_offset = 0) {
+    if (cut_offset > 0) {
         cut_size = size + 2 * cut_offset;
         bump_size = size + 2 * bump_depth + 2 * cut_offset;
         bump_d_cut_adjusted = bump_d + 2 * cut_offset;
         rotate([0, 90, 0]) {
             translate([-cut_size/2, -cut_size/2])
-                cube([cut_size, cut_size, l + cut_len_offset]);
+                cube([cut_size, cut_size, l + cut_offset]);
             translate([0, 0, 0.5 * l]) {
                 for(i = [0 : 3])
                     rotate(i * 90)
@@ -150,7 +144,7 @@ module square_snap_peg(size = default_size, l = default_len, bump_depth = defaul
                             circle(d = bump_d);
                 }
             }
-            if (!is_cut)
+            if (cut_offset == 0)
                 snap_cut(size, l);
         }
     }
