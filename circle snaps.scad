@@ -209,8 +209,7 @@ module circle_snap_tabs(
 	tab_len = inner_wall_width + outer_wall_width/2 + snap_offset;
 	for (i = [0 : tab_count]) {
 		rotate(i * 360/tab_count)
-            translate([0, 0, 0])
-                tab();
+            tab();
 	}
 
     module tab() {
