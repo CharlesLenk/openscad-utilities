@@ -38,15 +38,15 @@ module threaded_insert_hole() {
     }
 }
 
-module countersink(shaft_diameter, head_size, head_depth, shaft_length = 50, head_length = 50) {
-    head_depth = is_undef_or_0(head_depth) ? (head_size - shaft_diameter)/2 : head_depth;
+module countersink(shaft_diameter, head_size, head_depth = 0, shaft_length = 50, head_length = 50) {
+	head_shaft_offset = (head_size - shaft_diameter)/2;
     rotate_extrude()
         polygon(
             [
                 [0, head_length],
                 [head_size/2, head_length],
-                [head_size/2, 0],
-                [shaft_diameter/2, -head_depth],
+                [head_size/2, -head_depth],
+                [shaft_diameter/2, -head_depth - head_shaft_offset],
                 [shaft_diameter/2, -shaft_length],
                 [0, -shaft_length],
             ]
