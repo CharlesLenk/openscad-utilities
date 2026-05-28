@@ -2,7 +2,7 @@ include <common.scad>
 
 default_size = 5;
 default_len = 10;
-default_bump_depth = 0.4;//0.25;
+default_bump_depth = 0.25;
 default_cut_offset = 0.15;
 bump_d = 1.5;
 
