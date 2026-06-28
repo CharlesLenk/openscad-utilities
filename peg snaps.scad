@@ -87,7 +87,7 @@ module round_snap_peg(d = default_size, l = default_len, bump_depth = default_bu
     difference() {
         intersection() {
             rotate([0, 90, 0]) {
-                rounded_cylinder(d = d + 2 * cut_offset, h = l + 2 * cut_offset, top_d = d/3);
+                rounded_cylinder(d = d + 2 * cut_offset, h = l + 2.5 * cut_offset, top_d = d/3);
                 translate([0, 0, 0.5 * l])
                     torus(d1 = d - 2 * bump_d + 2 * bump_depth, d2 = bump_d_cut_adjusted);
             }
@@ -111,7 +111,7 @@ module square_snap_peg(size = default_size, l = default_len, bump_depth = defaul
         bump_d_cut_adjusted = bump_d;
         rotate([0, 90, 0]) {
             translate([-cut_size/2, -cut_size/2])
-                cube([cut_size, cut_size, l + 2 * cut_offset]);
+                cube([cut_size, cut_size, l + 2.5 * cut_offset]);
             translate([0, 0, 0.5 * l]) {
                 for(i = [0 : 3])
                     rotate(i * 90)
