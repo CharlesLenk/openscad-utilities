@@ -38,15 +38,15 @@ module threaded_insert_hole() {
     }
 }
 
-module countersink(shaft_diameter, head_size, head_depth, shaft_length = 50, head_length = 50) {
-    head_depth = is_undef_or_0(head_depth) ? (head_size - shaft_diameter)/2 : head_depth;
+module countersink(shaft_diameter, head_size, head_depth = 0, shaft_length = 50, head_length = 50) {
+	head_shaft_offset = (head_size - shaft_diameter)/2;
     rotate_extrude()
         polygon(
             [
                 [0, head_length],
                 [head_size/2, head_length],
-                [head_size/2, 0],
-                [shaft_diameter/2, -head_depth],
+                [head_size/2, -head_depth],
+                [shaft_diameter/2, -head_depth - head_shaft_offset],
                 [shaft_diameter/2, -shaft_length],
                 [0, -shaft_length],
             ]
@@ -85,22 +85,23 @@ module rounded_square_2(vector, c1, c2, c3, c4, r = 0, center = false) {
     }
 }
 
-module tombstone_2d(vector) {
+module tombstone_2d(vector, center_on_circle = false) {
 	x = vector[0];
 	y = vector[1];
 
     assert(x >= y/2, "X dimension must be at least half Y dimension.");
 
-    rounded_square_2([x, y], c2 = y/2, c3 = y/2);
+    translate([center_on_circle ? -x + y/2 : 0, center_on_circle ? -y/2 : 0])
+        rounded_square_2([x, y], c2 = y/2, c3 = y/2);
 }
 
-module tombstone(vector) {
+module tombstone(vector, center_on_circle = false) {
 	x = vector[0];
 	y = vector[1];
     z = vector[2];
 
     linear_extrude(z)
-        tombstone_2d([x, y]);
+        tombstone_2d([x, y], center_on_circle);
 }
 
 function arc_points(r, start_angle, stop_angle) =
