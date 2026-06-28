@@ -4,7 +4,7 @@ default_size = 5;
 default_len = 10;
 default_bump_depth = 0.4;
 default_cut_offset = 0.15;
-default_cut_length_offset = 0.3;
+default_cut_length_offset = 0.4;
 bump_d = 1.5;
 
 if ($preview)
